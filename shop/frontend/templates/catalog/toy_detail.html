@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{view.kwargs.name}}</title>
+    <link rel="stylesheet" href="{% static 'css/catalog/toy_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper">
+            <div class="header__inner">
+                <div class="logo">
+                    <a href="{% url 'company:Home' %}" class="logo__link">
+                        hytor
+                    </a>
+                </div>
+                <div class="search">
+                     <form class="search__form" action="{% url 'catalog:search' %}" method="GET">
+                        <input type="text" class="search__input" placeholder="Search" name="query">
+                        <button class="search__btn">Search</button>
+                    </form>
+                    <div class="search__results"></div>
+                </div>
+                <div class="header__box">
+                    {% if request.user.is_authenticated %}
+                        <div class="profile">
+                            <img src="{% static 'img/company/profile.png' %}" alt="Profile" class="profile__img">
+                            <ul class="profile__list">
+                                <li class="profile__item"><a href="{% url 'users:Profile'%}" class="profile__link">My profile</a></li>
+                                <li class="profile__item"><a href="#" class="profile__link">Orders</a></li>
+                                <li class="profile__item logout"><a href="{% url 'users:Log out'%}" class="profile__link">Log out</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'users:Log in' %}" class="header__btn">Sign in</a>
+                    {% endif %}
+                    <div class="cart">
+                        <a href="#" class="cart__link">
+                            <img class="cart__img" src="{% static 'img/basket.png' %}" alt="Cart">
+                            {% if cart_length %}
+                                 <span class="cart__badge">{{cart_length}}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <section class="toy">
+            <div class="toy__inner">
+                {%for field in toy %}
+                    <div class="toy__top">
+                        <div class="slider-outer">
+                            <img src="{% static 'img/catalog/arrow.png' %}" alt="Previous" class="prev">
+                            <div class="slider-inner">
+                                <img src="{{field.poster.url}}" class="slider__img active">
+                                {% for img in field.photos.all %}
+                                    <img src="{{img.image.url}}" alt="Image of the toy" class="slider__img">
+                                {% endfor %}
+                            </div>
+                            <img src="{% static 'img/catalog/arrow.png' %}" alt="Next" class="next">
+                        </div>
+                        <div class="toy__top-content">
+                            <h1 class="toy__title">{{field.name}}</h1>
+                            <div class="toy__line">
+                                <div class="toy__item">Category:</div>
+                                <div class="toy__item">
+                                    {% for category in field.category.all %}
+                                        {{category}}<br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="toy__line">
+                                <div class="toy__item">Materials:</div>
+                                <div class="toy__item">
+                                    {% for material in field.material.all %}
+                                        {{material}}<br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="toy__line">
+                                <div class="toy__item">Brand:</div>
+                                <div class="toy__item">{{field.brand}}</div>
+                            </div>
+                            <div class="toy__line">
+                                <div class="toy__item">Country:</div>
+                                <div class="toy__item">{{field.country}}</div>
+                            </div>
+                            <div class="toy__line">
+                                <div class="toy__item">Age:</div>
+                                <div class="toy__item">{{field.age}}+</div>
+                            </div>
+                            <div class="toy__line">
+                                <div class="toy__item">Released for sale:</div>
+                                <div class="toy__item">{{field.year}}</div>
+                            </div>
+                            <div class="toy__line">
+                                <div class="toy__item">Quantity:</div>
+                                <div class="toy__item">{{field.quantity}}</div>
+                            </div>
+                            <div class="toy__line">
+                                <div class="toy__item">Price:</div>
+                                <div class="toy__item">${{field.price}}</div>
+                            </div>
+                                {% if field.get_id in cart.keys %}
+                                    <div class="toy__top-btn toy__top-btn--disabled" data-product-id="{{field.id}}">In the cart</div>
+                                {% elif not field.quantity %}
+                                    <div class="toy__top-btn toy__top-btn--disabled" data-product-id="{{field.id}}">Not for sale</div>
+                                {% else %}
+                                    <div class="toy__top-btn" data-product-id="{{field.id}}" id="buy-button">Add to the cart</div>
+                                {% endif %}
+                        </div>
+                    </div>
+                    <div class="toy__description">
+                        <h1 class="description__title">Description</h1>
+                        <div class="description__text">{{field.description}}</div>
+                    </div>
+                    <div class="toy__bottom">
+                        <h1 class="toy__bottom-title">Comments</h1>
+                        <div class="comments">
+                            {% if request.user.is_authenticated %}
+                                <form method="POST" class="form">
+                                    {% csrf_token %}
+                                    <textarea name="comment" id='comment' class="form__input"></textarea>
+                                    <button class="send" disabled>Send</button>
+                                </form>
+                            {% else %}
+                                <a href="{% url 'users:Log in' %}">Please login in order write a comment</a>
+                            {% endif %}
+                            <div class="comments__list">
+                                {% for comment in field.reviews.all %}
+                                    <div class="comment__item">
+                                        <h4 class="comment__title">{{comment.user.username}}</h4>
+                                        <div class="comment__text">{{comment}}</div>
+                                        {% if comment.user.username == request.user.username %}
+                                            <button class="edit" data-index="{{comment.id}}">Edit</button>
+                                            <button class="delete" >Delete</button>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="error">
+                        Haven't found the toy
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+    <div class="orders">
+        <div class="orders__inner">
+
+            <div class="orders__top">
+                <h2 class="orders__top-title">Cart</h2>
+                <div class="orders__exit"></div>
+            </div>
+            <div class="orders__bottom">
+                <div class="orders__list">
+                    {% for id, item in cart.items %}
+                        <div class="orders__list-item" data-product-id="{{id}}">
+                            <div class="orders__block orders__block--left">
+                                <img src="{{item.poster}}" alt="Poster of toy" class="orders__img">
+                                <div class="order__info">
+                                    <h3 class="orders__title">{{item.name}}</h3>
+                                    <div class="orders__price">{{item.totalPrice}}$</div>
+                                </div>
+                            </div>
+                            <div class="orders__block orders__block--right">
+                                <div class="orders__btn-delete">Delete</div>
+                                <div class="quantity">
+                                    <button class="quantity__btn" id="minus">-</button>
+                                    <input type="number" class="quantity__input"  value="{{item.quantity}}">
+                                    <button class="quantity__btn" id="plus">+</button>
+                                </div>
+                                <a href="{% url 'payment:order' id %}" class="orders__btn-buy">Buy</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{% static 'js/catalog/toy_detail.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/profile.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            $(document).on('click', '.edit', function(){
+                $('.edit').css({'display': 'none'})
+                $('.delete').css({'display': 'none'})
+                index = $(this).data('index');
+                text = $(this).prev().text();
+                block = $(this).parent();
+                block.html(`<h3 class="edit__title">{{request.user.username}}</h3><textarea class="edit__input">${text}</textarea> <button data-index="${index}" class="edit__btn">Edit</button>`)
+                }
+            );
+            $(document).on('click', '.edit__btn', function (){
+                button = $('.edit__btn');
+                comment = $('.edit__input').val();
+                index = button.data('index');
+                parent = button.parent()
+                $.ajax({
+                    url: "ajax-comment/{{ name|safe }}",
+                    method: 'PUT',
+                    headers: { "X-CSRFToken": getCookie("csrftoken")},
+                    data: {
+                        comment: comment,
+                        index: index
+                     },
+                    success: function(response){
+                        parent.html('<div class="comment__item"><h4 class="comment__title">{{request.user.username}}</h4><div class="comment__text">'+comment+`</div><button class="edit" data-index="${index}">Edit</button><button class="delete" >Delete</button></div>`);
+                        $('.edit').css({'display': 'inline-block'});
+                        $('.delete').css({'display': 'inline-block'})
+                    }
+                })
+            })
+            $('.form').submit(function(e){
+                e.preventDefault()
+                let comment = $('#comment').val()
+                $.ajax({
+                    url: "ajax-comment/{{ name|safe }}",
+                    method: 'POST',
+                    data: {
+                        comment: comment,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                     },
+                    success: function(response){
+                        $('.comments__list').prepend('<div class="comment__item"><h4 class="comment__title">{{request.user.username}}</h4><div class="comment__text">'+comment+`</div><button class="edit" data-index="${response.index}">Edit</button><button class="delete" >Delete</button></div>`);
+                    }
+                })
+            })
+            $('#comment').keyup(function(){
+                btn = $('.send')
+                text = $(this).val()
+                if (text.trim() != ''){
+                    btn.removeAttr('disabled').css({'background-color': '#28668a', 'cursor': 'pointer'})
+                } else {
+                    btn.attr('disabled', 'true').css({'background-color': '#929c94', 'cursor': 'initial'})
+                }
+            })
+            $(document).on('click', '.delete', function (){
+                button = $(this)
+                index  = button.prev().data('index');
+                $.ajax({
+                    url: "ajax-comment/{{ name|safe }}",
+                    method: 'DELETE',
+                    headers: { "X-CSRFToken": getCookie("csrftoken")},
+                    data: {
+                        index: index
+                     },
+                    success: function(response){
+                        button.parent().remove()
+                    }
+                })
+            })
+           $('#buy-button').click(function (e) {
+                pk = $(this).data('product-id')
+                $.ajax({
+                    method: 'POST',
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    data: { pk: pk },
+                    url: '/catalog/orders/',
+                    success: function({item, id, cartCounter}) {
+                        if(cartCounter == 1) {
+                            $('.cart').prepend(`<span class="cart__badge">${cartCounter}</span>`)
+                        } else {
+                            $('.cart__badge').text(cartCounter)
+                        }
+                        $(".toy__top-btn").addClass('toy__top-btn--disabled').text('In the cart')
+                        if (item) {
+                            $('.orders__list').prepend(`
+                                <div class="orders__list-item" data-product-id="${id}">
+                                    <div class="orders__block orders__block--left">
+                                        <img src="${item.poster}" alt="Poster of toy" class="orders__img">
+                                        <div class="order__info">
+                                            <h3 class="orders__title">${item.name}</h3>
+                                            <div class="orders__price">${item.totalPrice}$</div>
+                                        </div>
+                                    </div>
+                                    <div class="orders__block orders__block--right">
+                                        <div class="orders__btn-delete">Delete</div>
+                                        <div class="quantity">
+                                            <button class="quantity__btn" id="minus">-</button>
+                                            <input type="number" class="quantity__input" value="${item.quantity}">
+                                            <button class="quantity__btn" id="plus">+</button>
+                                        </div>
+                                        <a href="/orders/${id}" class="orders__btn-buy">Buy</a>
+                                    </div>
+                                </div>
+                            `)
+                        }
+                    }
+
+                })
+           })
+        })
+    </script>
+</body>
+</html>

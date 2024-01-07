@@ -1,0 +1,46 @@
+{% extends "users/layout.html" %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static '/css/users/login.css' %}">
+{% endblock styles %}
+{% block content %}
+    <main class="main">
+        <section class="login">
+            <div class="login__inner">
+                {% if request.user.is_authenticated %}
+                    <div class="authenticated">
+                        <p class="authenticated__text">
+                            You have already authenticated. Do you want to log out?
+                        </p>
+                        <a href="{% url 'users:Log out' %}" class="authenticated__link">Log out</a>
+                    </div>
+                {% else %}
+                    {% if error %}
+                        <p class="error">{{error}}</p>
+                    {% endif %}
+                    <form method="POST" class="form">
+                        {% csrf_token %}
+                        <label class="form__label" for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+                        {{form.email}}
+                        {% if form.email.errors %}
+                            {{form.email.errors}}
+                        {% endif %}
+                        <label class="form__label" for="{{form.password.id_for_label}}">{{form.password.label}}</label>
+                        {{form.password}}
+                            {% if form.password.errors %}
+                                {{form.password.errors}}
+                            {% endif %}
+                        <label for="{{form.captcha.id_for_label}}">{{form.captcha.label}}:</label>
+                        {{form.captcha}}
+                        <button type="submit" class="submit">Enter</button>
+                    </form>
+                    <a href="{% url 'social:begin' 'google-oauth2' %}" class="google">Sign in with google</a>
+                    <a href="{% url 'users:Sign up' %}" class="login__link">Don`t have account? Create it</a>
+                    <a href="{% url 'users:Reset password' %}" class="login__link">Forgot password?</a>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+{% endblock content%}
+

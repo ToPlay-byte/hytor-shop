@@ -1,0 +1,42 @@
+{% extends "payment/layout.html" %}
+{% load static %}
+{% block title %}Your oreders{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/payment/orders_list.css' %}">
+{% endblock styles %}
+{% block content %}
+    <main class="main">
+        <section class="orders-list">
+        <div class="wrapper-small">
+            <div class="orders-list__inner">
+                {% for field in orders %}
+                    <div class="orders-list__item">
+                        <h4 class="orders-list__title">{{field.product.name}}</h4>
+                        <div class="orders-list__quantity">
+                            Quantity:{{field.quantity}}
+                        </div>
+                        <div class="orders-list__price">
+                            Price:{{field.total_price}}
+                        </div>
+                        {% if not field.paid %}
+                              <a href="#" class="orders-list__btn" data-order-id="{{field.id}}">Cancel</a>
+                            <a href="/orders/payment/{{field.pk}}" class="orders-list__stage orders-list__stage--active">Buy</a>
+                        {% else %}
+                            <div class="orders-list__stage orders-list__stage--completed">Completed</div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <div class="orders-list__empty">
+                        You haven't ordered anything yet
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    </main>
+{% endblock content%}
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{% static 'js/payment/orders_list.js' %}"></script>
+{% endblock scripts %}

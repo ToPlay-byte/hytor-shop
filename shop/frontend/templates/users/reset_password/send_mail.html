@@ -1,0 +1,26 @@
+{% extends 'users/reset_password/reset_password.html' %}
+{% block content %}
+{% if request.user.is_authenticated %}
+    <div class="authenticated">
+        <p class="authenticated__text">
+            You have already authenticated. Do you want to log out?
+        </p>
+        <a href="{% url 'users:Log out' %}" class="authenticated__link">Log out</a>
+    </div>
+{% else %}
+    {% if error %}
+        <p class="error">{{error}}</p>
+    {% endif %}
+    <form method="POST" class="form" action="">
+        <h4 class="reset__title">Enter your user account's verified email address and we will send you a password reset link.</h4>
+        {% csrf_token %}
+        <label class="form__label" for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+        {{form.email}}
+        {% if form.email.errors %}
+            {{form.email.errors}}
+        {% endif %}
+        <input type="submit" value="Send" class="submit">
+    </form>
+        <a href="{% url 'users:Log in' %}" class="reset__link">Do you remember your password?Log in</a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Catalog</title>
+    <link rel="stylesheet" href="{% static 'css/catalog/catalog.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper">
+            <div class="header__inner">
+                <div class="logo">
+                    <a href="{% url 'company:Home' %}" class="logo__link">
+                        hytor
+                    </a>
+                </div>
+                <div class="search">
+                     <form class="search__form" action="{% url 'catalog:search' %}" method="GET">
+                        <input type="text" class="search__input" placeholder="Search" name="query">
+                        <button class="search__btn">Search</button>
+                    </form>
+                    <div class="search__results"></div>
+                </div>
+                <div class="header__box">
+                    {% if request.user.is_authenticated %}
+                        <div class="profile">
+                            <img src="{% static 'img/company/profile.png' %}" alt="Profile" class="profile__img">
+                            <ul class="profile__list">
+                                <li class="profile__item"><a href="{% url 'users:Profile'%}" class="profile__link">My profile</a></li>
+                                <li class="profile__item"><a href="#" class="profile__link">Orders</a></li>
+                                <li class="profile__item logout"><a href="{% url 'users:Log out'%}" class="profile__link">Log out</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'users:Log in' %}" class="header__btn">Sign in</a>
+                    {% endif %}
+                    <div class="cart">
+                        <a href="#" class="cart__link">
+                            <img class="cart__img" src="{% static 'img/basket.png' %}" alt="Cart">
+                            {% if cart_length %}
+                                 <span class="cart__badge">{{cart_length}}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <section class="catalog">
+            <div class="catalog__inner">
+                <div class="categories">
+                    <h1 class="category__title">Categories</h1>
+                    {% for category in categories %}
+                        <a href="{% url 'catalog:category' category.category %}" class="categories__link">{{category.category}}</a>
+                    {% endfor %}
+                </div>
+                <div class="catalog__list">
+                    {% for product in products %}
+                        <a href="{{product.get_absolute_url}}" class="catalog__link">
+                            <div class="product">
+                                <img src="{{product.poster.url}}" alt="{{product.name}}" class="product__img">
+                                <div class="product__content">
+                                    <h2 class="product__title">{{product.name}}</h2>
+                                    <div class="product__box">
+                                        <div class="box__line">
+                                            <div class="box__item">Released for sale:</div>
+                                            <div class="box__item box__item--right">{{product.created}}</div>
+                                        </div>
+                                        <div class="box__line">
+                                            <div class="box__item">Catagory:</div>
+                                            <div class="box__item">
+                                                {% for category in product.category.all %}
+                                                    {{category}}<br>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <dl class="description">
+                                            <dt class="description__title">Description</dt>
+                                            <dd class="description__text">{{ product.description|truncatewords:15 }}</dd>
+                                        </dl>
+                                        <div class="price">
+                                            ${{product.price}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% empty %}
+                        <div class="empty">
+                            Haven`t added toys yet.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <section class="pagination">
+            <div class="wrapper">
+                <div class="pagination__inner">
+                   {% if page_obj.has_previous %}
+                        <span class="page">
+                            <a href="?page={{page_obj.previous_page_number}}"  class="pagination__link">{{page_obj.previous_page_number}}</a>
+                        </span>
+                    {% endif %}
+                    <span class="page">
+                        {{page_obj.number}}
+                    </span>
+                    {% if page_obj.has_next %}
+                        <span class="page">
+                            <a href="?page={{page_obj.next_page_number}}"  class="pagination__link">{{page_obj.next_page_number}}</a>
+                        </span>
+                        {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+                            <span class="page">
+                            <a href="?page={{page_obj.page_obj.paginator.num_pages}}" class="pagination__link">{{page_obj.paginator.num_pages}}</a>
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+    <div class="orders">
+        <div class="orders__inner">
+            <div class="orders__top">
+                <h2 class="orders__top-title">Cart</h2>
+                <div class="orders__exit"></div>
+            </div>
+            <div class="orders__bottom">
+                <div class="orders__list">
+                    {% for id, item in cart.items %}
+                        <div class="orders__list-item" data-product-id="{{id}}">
+                            <div class="orders__block orders__block--left">
+                                <img src="{{item.poster}}" alt="Poster of toy" class="orders__img">
+                                <div class="order__info">
+                                    <h3 class="orders__title">{{item.name}}</h3>
+                                    <div class="orders__price">{{item.totalPrice}}$</div>
+                                </div>
+                            </div>
+                            <div class="orders__block orders__block--right">
+                                <div class="orders__btn-delete">Delete</div>
+                                <div class="quantity">
+                                    <button class="quantity__btn" id="minus">-</button>
+                                    <input type="number" class="quantity__input"  value="{{item.quantity}}">
+                                    <button class="quantity__btn" id="plus">+</button>
+                                </div>
+                                <a href="{% url 'payment:order' id %}" class="orders__btn-buy">Buy</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/profile.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+</body>
+</html>

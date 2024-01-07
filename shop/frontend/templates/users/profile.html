@@ -1,0 +1,25 @@
+{% extends "users/layout.html" %}
+{% load static %}
+{% block title %}Profile{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static '/css/users/profile.css' %}">
+{% endblock styles %}
+{% block content %}
+    <main class="main">
+        <section class="profile">
+            <div class="profile__inner">
+                <form method="POST" class="form">
+                    {% csrf_token %}
+                    {%for field in form %}
+                        <label for="{{field.id_for_label}}">{{field.label}}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            {{field.errors}}
+                        {% endif %}
+                    {% endfor %}
+                    <input type="submit" class="submit" value="Save">
+                </form>
+            </div>
+        </section>
+    </main>
+{% endblock content%}

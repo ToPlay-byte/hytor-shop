@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+li {
+    list-style: none;
+}
+
+.wrapper {
+    max-width: 1104px;
+    padding:0 5px 0 5px;
+    margin: 0 auto;
+}
+
+.wrapper-small {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.header {
+    background-color: #13131f;
+}
+.header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.logo {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.header__btn {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13x;
+    font-weight: 400;
+    padding: 10px 15px;
+    border: 1px solid #750712;
+    border-radius: 5px;
+    color: #750712;
+}
+
+.order {
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+
+.order__form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+.orders__input {
+    padding: 5px 10px;
+    border: 1px solid #000;
+    border-radius: 20px;
+}
+
+
+
+.orders__btn {
+    background-color:  #de8441;
+    padding: 10px 15px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.city-select {
+   display: flex;
+   flex-direction: column;
+   row-gap: 15px;
+   position: relative;
+}
+
+.city-select__list {
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    top: 110%;
+    display: none;
+    border: 1px solid #000;
+    border-radius: 15px;
+}
+
+.city-select__item {
+    cursor: pointer;
+    width: 400px;
+    max-width: 400px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    padding-left: 5px;
+}

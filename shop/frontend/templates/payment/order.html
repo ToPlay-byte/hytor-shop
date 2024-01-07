@@ -1,0 +1,24 @@
+{% extends "payment/layout.html" %}
+{% load static %}
+{% block title %}Order{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/payment/order.css' %}">
+{% endblock styles %}
+{% block content %}
+    <main class="main">
+        <section class="order">
+            <div class="wrapper-small">
+                <div class="order__inner">
+                    <form class="order__form" method="POST">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <label for="{{field.id_for_label}}">{{field.label}}</label>
+                        {{field}}
+                        {% endfor %}
+                        <button class="orders__btn">Next</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content%}

@@ -1,0 +1,66 @@
+{% extends "users/layout.html" %}
+{% load static %}
+{% block title %}Sign up{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static '/css/users/signup.css' %}">
+{% endblock styles %}
+{% block content %}
+    <main class="main">
+        <section class="registration">
+            <div class="registration__inner">
+                {% if request.user.is_authenticated %}
+                    <div class="authenticated">
+                        <p class="authenticated__text">
+                            You have  authenticated. Do you want to log out?
+                        </p>
+                        <a href="{% url 'users:Log out' %}" class="authenticated__link">Log out</a>
+                    </div>
+                {% else %}
+                    <form method="POST" class="form">
+                        {% csrf_token %}
+                        {%for field in form %}
+                            <label for="{{field.id_for_label}}">{{field.label}}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                {{field.errors}}
+                            {% endif %}
+                        {% endfor %}
+                        <input type="submit" class="submit" value="Register">
+                    </form>
+                    <a href="{% url 'users:Log in' %}" class="registration__link">Do you have account? Log in</a>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+{% endblock content%}
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.form__input').keyup(function(){
+                console.log('1');
+                let dataSerialize = $('.form').serialize();
+                $.ajax({
+                    url: '/user/ajax_sign_up',
+                    type: 'post',
+                    data: dataSerialize,
+                    success: function(data){
+                        console.log('2');
+                        if( data.result == 'Error'){
+                            $('.error').remove();
+                            for(let field in data.response){
+                                console.log('4');
+                                let input = $(`#${field}`);
+                                let error = data.response[field]
+                                input.after(`<div class='error error-${field}'>${error}</div>`)
+                            };
+                        }
+                    },
+                    error: function(error){
+                        console.log(error)
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock scripts %}

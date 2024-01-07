@@ -1,0 +1,21 @@
+{% extends "payment/layout.html" %}
+{% load static %}
+{% block title %}Payment{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/payment/checkout.css' %}">
+{% endblock styles %}
+{% block content %}
+    <main class="main">
+        <section class="payment">
+            <div class="wrapper-small">
+                <div class="payment__title">Payment</div>
+                <div class="payment__inner">
+                    <form action="{% url 'payment:create' pk %}" method="POST" class="payment__form">
+                        {% csrf_token %}
+                        <button сlass="payment__submit" type="submit">Pay with PayPal</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

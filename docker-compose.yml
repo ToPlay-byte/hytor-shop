@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=host
+      - POSTGRES_PASSWORD=host
+      - PGDATA=/data/postgres
+    volumes:
+      - ./postgres_data:/data/postgres
+    ports:
+      - "127.0.0.1:5435:5432"
+  website:
+    build: 
+      context: ./shop
+      dockerfile: ./dockerfile
+    volumes:
+      - ./shop:/app
+      - ./shop/logs/:/app/logs
+    command: bash -c "./manage.py migrate && gunicorn config.wsgi:application"
+    ports:
+      - "127.0.0.1:8000:8000"
+    expose:
+      - 8000
+    depends_on:
+      - database
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: ./dockerfile
+    ports:
+      - 1337:80
+    depends_on:
+      - website
+    volumes:
+      - ./shop/frontend/static:/app/frontend/static
+      - ./shop/frontend/media:/app/frontend/media
+      - ./nginx/logs/:/app/logs/
+    
+
+    
+    

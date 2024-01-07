@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+dd {
+    margin-left: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+input {
+    border:none;
+    background:none;
+    outline:none;
+    padding:0;
+}
+
+button {
+    border: none;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+li {
+    list-style: none;
+}
+
+.wrapper {
+    max-width: 1104px;
+    padding:0 5px 0 5px;
+    margin: 0 auto;
+}
+
+.header {
+    background-color: #13131f;
+}
+.header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.header__box {
+    display: flex;
+    column-gap: 60px;
+}
+
+.logo {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.catalog__inner {
+    display: flex;
+    column-gap: 100px;
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.header__btn {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13x;
+    font-weight: 400;
+    padding: 10px 15px;
+    border: 1px solid #750712;
+    border-radius: 5px;
+    color: #750712;
+}
+
+.catalog__list {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 30px;
+}
+
+.categories {
+    padding: 30px 60px;
+    margin-top: 30px;
+    border-radius: 3px;
+    background-color: #1890db   ;
+    max-height: 400px;
+    color: #fff;
+}
+
+.categories__link {
+    display:block;
+    margin-top: 10px;
+}
+
+.product {
+    padding: 20px;
+    border: 1px solid #000;
+    border-radius: 3px;
+    display: flex;
+    column-gap: 10px;
+}
+
+.product__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.product__title {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    max-width: 160px;
+}
+
+.product__img {
+    height: 250px;
+    width: 250px;
+}
+
+.box__line {
+    display: flex;
+    width: 250px;
+    justify-content: space-between;
+
+}
+
+.box__item {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 16x;
+    font-weight: 400;
+}
+
+.description {
+    margin: 10px 0 20px;
+}
+
+.description__text {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 18x;
+    font-weight: 400;
+    max-width: 200px;
+    margin-top: 5px;
+}
+
+.price {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-top: 30px;
+    margin-right: 10px;
+    float: right;
+}
+
+.pagination {
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.pagination__inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+}
+
+
+.page {
+    display: inline-block;
+    padding: 3px 5px;
+    background-color: #fc6b03;
+    color: #fff;
+}
+
+
+
+
+
+

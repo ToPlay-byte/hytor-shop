@@ -1,0 +1,18 @@
+{% extends "payment/layout.html" %}
+{% load static %}
+{% block title %}Failed{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/payment/success.css' %}">
+{% endblock styles %}
+{% block content %}
+    <main class="main">
+        <section class="success">
+            <div class="wrapper-small">
+                <div class="success__inner">
+                    <h1 class="success__title">Your payment was not completed</h1>
+                    <a href="{% url 'company:Home' %}" class="success__btn">Return to the main pagee</a>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content%}

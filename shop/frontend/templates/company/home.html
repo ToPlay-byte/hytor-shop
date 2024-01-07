@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HYTOR</title>
+    <link rel="stylesheet" href="static/css/company/home.css">
+    <link rel="stylesheet" href="static/css/cart.css">
+    <link rel="stylesheet" href="static/css/profile.css">
+</head>
+<body class="page">
+    <header class="header">
+        <div class="wrapper">
+            <div class="header__inner">
+                <div class="logo">
+                    <a href="#" class="logo__link">
+                        hytor
+                    </a>
+                </div>
+                <div class="toggle-menu">
+                    <nav class="menu">
+                        <ul class="menu__list">
+                            <li class="menu__item">
+                                <a href="#" class="menu__link" id="products">Our products</a>
+                            </li>
+                            <li class="menu__item">
+                                <a href="#" class="menu__link" id="about">about us</a>
+                            </li>
+                            <li class="menu__item">
+                                <a href="#" class="menu__link" id="contacts">Contacts</a>
+                            </li>
+                            <li class="menu__item">
+                                <a href="{% url 'catalog:main' %}" class="menu__link">catalog</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    {% if request.user.is_authenticated %}
+                    <div class="profile">
+                        <img src="static/img/company/profile.png" alt="Profile" class="profile__img">
+                        <ul class="profile__list">
+                            <li class="profile__item"><a href="{% url 'users:Profile'%}" class="profile__link">My profile</a></li>
+                            <li class="profile__item"><a href="{% url 'payment:orders-list' %}" class="profile__link">Orders</a></li>
+                            <li class="profile__item logout"><a href="{% url 'users:Log out'%}" class="profile__link">Log out</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                        <a href="{% url 'users:Log in' %}" class="header__btn">Sign in</a>
+                    {% endif %}
+                    <div class="cart">
+                        <a href="#" class="cart__link">
+                            <img class="cart__img" src="static/img/basket.png" alt="Cart">
+                            {% if cart_length %}
+                                 <span class="cart__badge">{{cart_length}}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+                <div class="header__burger burger">
+                    <span class="burger__line"></span>
+                    <span class="burger__line"></span>
+                    <span class="burger__line"></span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="wrapper">
+            <section class="intro">
+                <h1 class="intro__title">Our shop have many toys which will like your child</h1>
+                <p class="intro__text">We promise that you will be pleased </p>
+                <a href="{% url 'catalog:main' %}" class="intro__btn">Look at our catalog</a>
+            </section>
+            <section class="products">
+                <h1 class="products__title">Our products</h1>
+                <div class="products__items">
+                    <div class="products__item">
+                        <img src="static/img/company/quality.png" alt="quality" class="products__img">
+                        <p class="products__text">
+                            We have high quility products
+                        </p>
+                    </div>
+                    <div class="products__item">
+                        <img src="static/img/company/complete.png" alt="complete" class="products__img">
+                        <p class="products__text">We have more 1 milion oreders</p>
+                    </div>
+                    <div class="products__item">
+                        <img src="static/img/company/delivery.png" alt="delivery" class="products__img">
+                        <p class="products__text">
+                            You get your order within three days a week
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <section class="about">
+                <h4 class="about__title">Our assortment amount more 3 thousand toys</h4>
+                <p class="about__text">
+                    We started at 2012 and still the leader in the sales of toys.
+                    We love to give children our toys and we know how to make that your children will laugh.
+                </p>
+                <img src="static/img/company/children.png" alt="Children" class="about__img">
+            </section>
+        </div>
+        <div class="orders">
+        <div class="orders__inner">
+
+            <div class="orders__top">
+                <h2 class="orders__top-title">Cart</h2>
+                <div class="orders__exit"></div>
+            </div>
+            <div class="orders__bottom">
+                <div class="orders__list">
+                    {% for id, item in cart.items %}
+                        <div class="orders__list-item" data-product-id="{{id}}">
+                            <div class="orders__block orders__block--left">
+                                <img src="{{item.poster}}" alt="Poster of toy" class="orders__img">
+                                <div class="order__info">
+                                    <h3 class="orders__title">{{item.name}}</h3>
+                                    <div class="orders__price">{{item.totalPrice}}$</div>
+                                </div>
+                            </div>
+                            <div class="orders__block orders__block--right">
+                                <div class="orders__btn-delete">Delete</div>
+                                <div class="quantity">
+                                    <button class="quantity__btn" id="minus">-</button>
+                                    <input type="number" class="quantity__input"  value="{{item.quantity}}">
+                                    <button class="quantity__btn" id="plus">+</button>
+                                </div>
+                                <a href="{% url 'payment:order' id %}" class="orders__btn-buy">Buy</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+    <footer class="footer">
+        <div class="wrapper">
+            <div class="footer__inner">
+                <ul class="social">
+                    <li class="social__item"><a href="" class="social__link"><img src="static/img/company/instagram.png" alt="Instagram" class="social__img"></a>
+                    </li>
+                    <li class="social__item"><a href="" class="social__link"><img src="static/img/company/facebook.png" alt="Facebook" class="social__img"></a>
+                    </li>
+                    <li class="social__item"><a href="" class="social__link"><img src="static/img/company/in.png" alt="LinkedIn" class="social__img"></a>
+                    </li>
+                    <li class="social__item"><a href="" class="social__link"><img src="static/img/company/vk.png" alt="VK" class="social__img"></a>
+                    </li>
+                </ul>
+                <div class="footer__block">
+                    <a href="tel:+380734409269" class="phone">+380734409269</a>
+                    <a href="mailto:oleksandr.hnylosyr@gmail.com" class="email">oleksandr.hnylosyr@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="order__list">
+        
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="static/js/profile.js"></script>
+    <script src="static/js/company/home.js"></script>
+    <script src="static/js/cart.js"></script>
+</body>
+</html>
