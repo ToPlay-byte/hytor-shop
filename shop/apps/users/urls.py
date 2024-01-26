@@ -20,7 +20,7 @@ urlpatterns = [
         ),
         name='Reset password'
     ),
-    path('success', views.SendingSuccessFul.as_view(), name='Success'),
+    path('success', views.SendingEmailSuccessfullyView.as_view(), name='Success'),
     path(
         'change_password/<uidb64>/<token>/',
         reset.PasswordResetConfirmView.as_view(

@@ -2,6 +2,8 @@ from django.db import models
 
 
 class Contacts(models.Model):
+    """Ця модель зберігає контакти, які користувач надає для звязку"""
+
     full_name = models.CharField(verbose_name='Full name', max_length=25, unique=True)
     email = models.EmailField(verbose_name='Email')
 

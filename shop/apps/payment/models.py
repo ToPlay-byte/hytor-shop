@@ -6,6 +6,7 @@ from apps.catalog.models import Product
 
 
 class Order(models.Model):
+
     first_name = models.CharField(verbose_name='First name', max_length=16)
     last_name = models.CharField(verbose_name='Last name', max_length=16)
     email = models.EmailField(verbose_name='Email')

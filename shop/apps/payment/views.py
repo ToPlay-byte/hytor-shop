@@ -19,6 +19,7 @@ paypalrestsdk.configure({
 
 
 class OrderView(FormView):
+
     template_name = 'payment/order.html'
     form_class = OrderForm
     success_url = reverse_lazy('payment:payment')
@@ -28,53 +29,65 @@ class OrderView(FormView):
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
+
         cart = Cart(self.request)
         product = Product.objects.get(pk=self.kwargs['pk'])
         data = self.get_cart(cart)
         user = None
+
         if self.request.user.is_authenticated:
             user = self.request.user
+
         self.order = Order.objects.create(
             user=user, quantity=data.get('quantity'), product=product,
             total_price=data.get('totalPrice'), **form.cleaned_data,
         )
+
         cart.delete(pk=self.kwargs['pk'])
+
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        print(self.order.pk)
         return reverse('payment:payment', kwargs={'pk': self.order.pk})
 
     def get_cart(self, cart):
 
         data = cart.display().get(self.kwargs['pk'])
-        print(data)
+
         if data:
             return data
-        else:
-            product = Product.objects.get(pk=int(self.kwargs['pk']))
-            data = {
-                'totalPrice': product.price,
-                'quantity': 1,
-            }
-            return data
+
+        product = Product.objects.get(pk=int(self.kwargs['pk']))
+        data = {
+            'totalPrice': product.price,
+            'quantity': 1,
+        }
+        return data
 
 
 class PaymentView(View):
-    def get(self, request, *args, **kwargs):
+    """Цей класс представлення сторінку для оплати"""
+
+    def get(self, request, **kwargs):
         order = get_object_or_404(Order, pk=kwargs.get('pk'), paid=False)
         return render(request, 'payment/checkout.html', {'pk': order.pk})
 
 
 class SuccessView(TemplateView):
+    """Цей клас представлення відповідає за відображення сторінки після успішного оформлення заказу"""
+
     template_name = 'payment/success.html'
 
 
 class FailedView(TemplateView):
+    """Цей класс представлення відповідає за сторінку, якщо було невірно оформлено замовлення"""
+
     template_name = 'payment/failed.html'
 
 
 class OrdersList(ListView, LoginRequiredMixin):
+    """Цей класс представлення відповідає за відображення сторінки з замовленнями користувача"""
+
     template_name = 'payment/orders_list.html'
     context_object_name = 'orders'
 
@@ -83,13 +96,19 @@ class OrdersList(ListView, LoginRequiredMixin):
 
 
 class AjaxDeleteOrderView(View):
-    def post(self, request, *args, **kwargs):
+    """Цей класс надає видаляти замовлення за допомогою запиту ajax"""
+
+    def post(self, request):
+
         pk = request.POST['pk']
         Order.objects.get(Q(user=request.user) & Q(pk=pk)).delete()
+
         return HttpResponse()
 
 
 def create_order(request, pk):
+    """Ця функція відповідає створює замовлення"""
+
     order = Order.objects.get(pk=pk)
     payment = paypalrestsdk.Payment({
         "intent": "sale",
@@ -122,11 +141,13 @@ def create_order(request, pk):
 
     if payment.create():
         return redirect(payment.links[1].href)
-    else:
-        return render(request, 'payment/failed.html')
+
+    return render(request, 'payment/failed.html')
 
 
 def execute_payment(request, pk):
+    """Ця функція обробляє замовлення"""
+
     order = Order.objects.get(pk=pk)
     payment_id = request.GET.get('paymentId')
     payer_id = request.GET.get('PayerID')
@@ -137,5 +158,5 @@ def execute_payment(request, pk):
         order.paid = True
         order.save()
         return render(request, 'payment/success.html')
-    else:
-        return render(request, 'payment/failed.html')
+
+    return render(request, 'payment/failed.html')

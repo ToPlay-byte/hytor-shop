@@ -12,9 +12,4 @@ urlpatterns = [
     path('search/', views.SearchView.as_view(), name='search'),
     path('detail/<name>', views.ProductView.as_view(), name='toy'),
     path('orders/', views.AjaxCart.as_view()),
-    path('api/products', views.ProductAPIList.as_view()),
-    path('api/product/<id>', views.ProductAPIView.as_view()),
-    path('api/categories', views.CategoryAPIList.as_view()),
-    path('api/materials', views.MaterialAPIList.as_view()),
-    path('api/brands', views.BrandAPIList.as_view())
 ]

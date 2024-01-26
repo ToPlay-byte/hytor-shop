@@ -7,5 +7,8 @@ from .models import Review
 
 @receiver(post_save, sender=Review)
 def comment_handler(sender, **kwargs):
+    """Відображаємо, що в консолі що коментар добавленно"""
+
+    # потім тут буде інша логіка
     if settings.DEBUG:
         print(f'{kwargs["instance"]} saved!')

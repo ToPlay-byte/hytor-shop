@@ -6,10 +6,13 @@ from django.http import QueryDict
 from rest_framework import generics
 
 from .cart import Cart
-from .serializers import *
+from .models import (
+    Product, Category, Review,
+)
 
 
 class CatalogListView(ListView):
+    """Цей класс представлення відображає каталог для користувача"""
     template_name = 'catalog/catalog.html'
     model = Product
     context_object_name = 'products'
@@ -25,22 +28,9 @@ class CatalogListView(ListView):
         return context
 
 
-class AjaxCart(View):
-    @staticmethod
-    def post(request):
-        return JsonResponse(Cart(request).post())
-
-    @staticmethod
-    def delete(request):
-        Cart(request).delete()
-        return JsonResponse({'cart_counter': len(Cart(request).display())})
-
-    @staticmethod
-    def put(request):
-        return JsonResponse(Cart(request).put())
-
-
 class SelectedCategoriesView(ListView):
+    """Цей класс представлення відображає користувача список товару згідно обраною категорією"""
+
     template_name = 'catalog/catalog.html'
     context_object_name = 'products'
     paginate_by = 5
@@ -49,13 +39,17 @@ class SelectedCategoriesView(ListView):
         return Product.objects.filter(category__category=self.kwargs['category']).order_by('id')
 
     def get_context_data(self, **kwargs):
+
         categories = Category.objects.all()
         context = super(SelectedCategoriesView, self).get_context_data(**kwargs)
         context['categories'] = categories
+
         return context
 
 
 class SearchView(ListView):
+    """За допомогою цього класу можемо робити пошук певного товару"""
+
     template_name = 'catalog/catalog.html'
     model = Product
     context_object_name = 'products'
@@ -70,22 +64,32 @@ class SearchView(ListView):
         )))
 
     def get_context_data(self, **kwargs):
+
         context = super(SearchView, self).get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+
         return context
 
-    def post(self, request):
-        items = Product.objects.filter(name__icontains=request.POST['query']).values_list('name')
+    @staticmethod
+    def post(request):
+
+        items = Product.objects.filter(
+            name__icontains=request.POST['query']
+        ).values_list('name')
+
         return JsonResponse({'items': list(items)})
 
 
 class ProductView(DetailView):
+
     template_name = 'catalog/toy_detail.html'
     context_object_name = 'toy'
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
         context['name'] = self.kwargs['name']
+
         return context
 
     def get_object(self):
@@ -93,53 +97,56 @@ class ProductView(DetailView):
 
 
 class AjaxComment(View):
+
     template_name = 'catalog/toy_detail.html'
 
-    def post(self, request, **kwargs):
-        review = Review()
+    @staticmethod
+    def post(request, **kwargs):
+
         comment = request.POST['comment']
+
         toy = Product.objects.get(name=kwargs['name'])
+
+        review = Review()
         review.comment = comment
         review.user = request.user
         review.review = toy
         review.save()
+
         return JsonResponse({'index': review.id})
 
-    def put(self, request):
+    @staticmethod
+    def put(request):
+
         data = QueryDict(request.body)
         comment = data['comment']
         index = data['index']
         Review.objects.filter(Q(pk=index) & Q(user=request.user)).update(comment=comment)
+
         return HttpResponse()
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
+
         data = QueryDict(request.body)
         index = data['index']
         Review.objects.filter(Q(pk=index) & Q(user=request.user)).delete()
+
         return HttpResponse()
 
 
-class ProductAPIList(generics.ListAPIView):
-    serializer_class = ProductSerializer
-    queryset = Product.objects.all()
+class AjaxCart(View):
+    """Цей класс представлення взаємодіє з кошиком за допомогою ajax запитів"""
 
+    @staticmethod
+    def post(request):
+        return JsonResponse(Cart(request).add())
 
-class ProductAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    lookup_url_kwarg = 'id'
+    @staticmethod
+    def delete(request):
+        Cart(request).delete()
+        return JsonResponse({'cart_counter': len(Cart(request).display())})
 
-
-class CategoryAPIList(generics.ListAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-
-class BrandAPIList(generics.ListAPIView):
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-
-
-class MaterialAPIList(generics.ListAPIView):
-    queryset = Material.objects.all()
-    serializer_class = MaterialSerializer
+    @staticmethod
+    def put(request):
+        return JsonResponse(Cart(request).put())
