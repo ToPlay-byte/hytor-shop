@@ -3,6 +3,7 @@ import os
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from django.utils import timezone
 
 
 def get_poster_path(obj, filename):
@@ -32,7 +33,7 @@ class Product(models.Model):
 
     name = models.CharField(verbose_name='Name', max_length=40, db_index=True, unique=True)
     description = models.CharField(verbose_name='Describe your toys', max_length=2000)
-    created = models.DateField(verbose_name='Created')
+    created = models.DateField(verbose_name='Created', blank=True, default=timezone.now())
     material = models.ManyToManyField('Material', verbose_name='Materials')
     poster = models.ImageField(verbose_name='Poster', default=f'media/catalog/Unknown.png', upload_to=get_poster_path)
     brand = models.ForeignKey(

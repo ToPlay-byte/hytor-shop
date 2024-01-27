@@ -25,13 +25,14 @@ class ReviewAdmin(admin.TabularInline):
 
  
 @admin.register(Brand)
-class ProductAdmin(admin.ModelAdmin):
+class BrandtAdmin(admin.ModelAdmin):
     list_display = ['brand']
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'get_img', 'name', 'created']
+    exclude = ['created']
     inlines = [PhotoAdmin, ReviewAdmin]
 
     def get_img(self, obj):

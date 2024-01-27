@@ -19,30 +19,15 @@ class CatalogListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
+
+        if self.kwargs.get('category'):
+            return Product.objects.filter(category__category=self.kwargs['category']).order_by('id')
+
         return super(CatalogListView, self).get_queryset().order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(CatalogListView, self).get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
-
-        return context
-
-
-class SelectedCategoriesView(ListView):
-    """Цей класс представлення відображає користувача список товару згідно обраною категорією"""
-
-    template_name = 'catalog/catalog.html'
-    context_object_name = 'products'
-    paginate_by = 5
-
-    def get_queryset(self):
-        return Product.objects.filter(category__category=self.kwargs['category']).order_by('id')
-
-    def get_context_data(self, **kwargs):
-
-        categories = Category.objects.all()
-        context = super(SelectedCategoriesView, self).get_context_data(**kwargs)
-        context['categories'] = categories
 
         return context
 
@@ -70,14 +55,6 @@ class SearchView(ListView):
 
         return context
 
-    @staticmethod
-    def post(request):
-
-        items = Product.objects.filter(
-            name__icontains=request.POST['query']
-        ).values_list('name')
-
-        return JsonResponse({'items': list(items)})
 
 
 class ProductView(DetailView):
