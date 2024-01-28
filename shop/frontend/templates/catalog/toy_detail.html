@@ -56,104 +56,99 @@
     <main class="main">
         <section class="toy">
             <div class="toy__inner">
-                {%for field in toy %}
-                    <div class="toy__top">
-                        <div class="slider-outer">
-                            <img src="{% static 'img/catalog/arrow.png' %}" alt="Previous" class="prev">
-                            <div class="slider-inner">
-                                <img src="{{field.poster.url}}" class="slider__img active">
-                                {% for img in field.photos.all %}
-                                    <img src="{{img.image.url}}" alt="Image of the toy" class="slider__img">
+                <div class="toy__top">
+                    <div class="slider-outer">
+                        <img src="{% static 'img/catalog/arrow.png' %}" alt="Previous" class="prev">
+                        <div class="slider-inner">
+                            <img src="{{toy.poster.url}}" class="slider__img active">
+                            {% for img in toy.photos.all %}
+                                <img src="{{img.image.url}}" alt="Image of the toy" class="slider__img">
+                            {% endfor %}
+                        </div>
+                        <img src="{% static 'img/catalog/arrow.png' %}" alt="Next" class="next">
+                    </div>
+                    <div class="toy__top-content">
+                        <h1 class="toy__title">{{toy.name}}</h1>
+                        <div class="toy__line">
+                            <div class="toy__item">Category:</div>
+                            <div class="toy__item">
+                                {% for category in toy.category.all %}
+                                    {{category}}<br>
                                 {% endfor %}
                             </div>
-                            <img src="{% static 'img/catalog/arrow.png' %}" alt="Next" class="next">
                         </div>
-                        <div class="toy__top-content">
-                            <h1 class="toy__title">{{field.name}}</h1>
-                            <div class="toy__line">
-                                <div class="toy__item">Category:</div>
-                                <div class="toy__item">
-                                    {% for category in field.category.all %}
-                                        {{category}}<br>
-                                    {% endfor %}
-                                </div>
+                        <div class="toy__line">
+                            <div class="toy__item">Materials:</div>
+                            <div class="toy__item">
+                                {% for material in toy.material.all %}
+                                    {{material}}<br>
+                                {% endfor %}
                             </div>
-                            <div class="toy__line">
-                                <div class="toy__item">Materials:</div>
-                                <div class="toy__item">
-                                    {% for material in field.material.all %}
-                                        {{material}}<br>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div class="toy__line">
-                                <div class="toy__item">Brand:</div>
-                                <div class="toy__item">{{field.brand}}</div>
-                            </div>
-                            <div class="toy__line">
-                                <div class="toy__item">Country:</div>
-                                <div class="toy__item">{{field.country}}</div>
-                            </div>
-                            <div class="toy__line">
-                                <div class="toy__item">Age:</div>
-                                <div class="toy__item">{{field.age}}+</div>
-                            </div>
-                            <div class="toy__line">
-                                <div class="toy__item">Released for sale:</div>
-                                <div class="toy__item">{{field.year}}</div>
-                            </div>
-                            <div class="toy__line">
-                                <div class="toy__item">Quantity:</div>
-                                <div class="toy__item">{{field.quantity}}</div>
-                            </div>
-                            <div class="toy__line">
-                                <div class="toy__item">Price:</div>
-                                <div class="toy__item">${{field.price}}</div>
-                            </div>
-                                {% if field.get_id in cart.keys %}
-                                    <div class="toy__top-btn toy__top-btn--disabled" data-product-id="{{field.id}}">In the cart</div>
-                                {% elif not field.quantity %}
-                                    <div class="toy__top-btn toy__top-btn--disabled" data-product-id="{{field.id}}">Not for sale</div>
-                                {% else %}
-                                    <div class="toy__top-btn" data-product-id="{{field.id}}" id="buy-button">Add to the cart</div>
-                                {% endif %}
                         </div>
-                    </div>
-                    <div class="toy__description">
-                        <h1 class="description__title">Description</h1>
-                        <div class="description__text">{{field.description}}</div>
-                    </div>
-                    <div class="toy__bottom">
-                        <h1 class="toy__bottom-title">Comments</h1>
-                        <div class="comments">
-                            {% if request.user.is_authenticated %}
-                                <form method="POST" class="form">
-                                    {% csrf_token %}
-                                    <textarea name="comment" id='comment' class="form__input"></textarea>
-                                    <button class="send" disabled>Send</button>
-                                </form>
+                        <div class="toy__line">
+                            <div class="toy__item">Brand:</div>
+                            <div class="toy__item">{{toy.brand}}</div>
+                        </div>
+                        <div class="toy__line">
+                            <div class="toy__item">Country:</div>
+                            <div class="toy__item">{{toy.country}}</div>
+                        </div>
+                        <div class="toy__line">
+                            <div class="toy__item">Age:</div>
+                            <div class="toy__item">{{toy.age}}+</div>
+                        </div>
+                        <div class="toy__line">
+                            <div class="toy__item">Released for sale:</div>
+                            <div class="toy__item">{{toy.year}}</div>
+                        </div>
+                        <div class="toy__line">
+                            <div class="toy__item">Quantity:</div>
+                            <div class="toy__item">{{toy.quantity}}</div>
+                        </div>
+                        <div class="toy__line">
+                            <div class="toy__item">Price:</div>
+                            <div class="toy__item">${{toy.price}}</div>
+                        </div>
+                            {% if toy.get_id in cart.keys %}
+                                <div class="toy__top-btn toy__top-btn--disabled" data-product-id="{{toy.id}}">In the cart</div>
+                            {% elif not toy.quantity %}
+                                <div class="toy__top-btn toy__top-btn--disabled" data-product-id="{{toy.id}}">Not for sale</div>
                             {% else %}
-                                <a href="{% url 'users:Log in' %}">Please login in order write a comment</a>
+                                <div class="toy__top-btn" data-product-id="{{field.id}}" id="buy-button">Add to the cart</div>
                             {% endif %}
-                            <div class="comments__list">
-                                {% for comment in field.reviews.all %}
-                                    <div class="comment__item">
-                                        <h4 class="comment__title">{{comment.user.username}}</h4>
-                                        <div class="comment__text">{{comment}}</div>
-                                        {% if comment.user.username == request.user.username %}
-                                            <button class="edit" data-index="{{comment.id}}">Edit</button>
-                                            <button class="delete" >Delete</button>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            </div>
+                    </div>
+                </div>
+                <div class="toy__description">
+                    <h1 class="description__title">Description</h1>
+                    <div class="description__text">{{field.description}}</div>
+                </div>
+                <div class="toy__bottom">
+                    <h1 class="toy__bottom-title">Comments</h1>
+                    <div class="comments">
+                        {% if request.user.is_authenticated %}
+                            <form method="POST" class="form">
+                                {% csrf_token %}
+                                <textarea name="comment" id='comment' class="form__input"></textarea>
+                                <button class="send" disabled>Send</button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'users:Log in' %}">Please login in order write a comment</a>
+                        {% endif %}
+                        <div class="comments__list">
+                            {% for comment in toy.reviews.all %}
+                                <div class="comment__item">
+                                    <h4 class="comment__title">{{comment.user.username}}</h4>
+                                    <div class="comment__text">{{comment}}</div>
+                                    {% if comment.user.username == request.user.username %}
+                                        <button class="edit" data-index="{{comment.id}}">Edit</button>
+                                        <button class="delete" >Delete</button>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
-                {% empty %}
-                    <div class="error">
-                        Haven't found the toy
-                    </div>
-                {% endfor %}
+                </div>
+
             </div>
         </section>
     </main>

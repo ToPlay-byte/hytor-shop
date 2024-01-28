@@ -2,8 +2,7 @@ from django.views.generic import DetailView, ListView, View
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 from django.http import QueryDict
-
-from rest_framework import generics
+from django.shortcuts import get_object_or_404
 
 from .cart import Cart
 from .models import (
@@ -41,6 +40,7 @@ class SearchView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
+
         return list(set(Product.objects.filter(
             Q(name__icontains=self.request.GET['query']) |
             Q(description__icontains=self.request.GET['query']) |
@@ -54,6 +54,10 @@ class SearchView(ListView):
         context['categories'] = Category.objects.all()
 
         return context
+
+    def post(self, request):
+        items = Product.objects.filter(name__icontains=request.POST['query']).values_list('name')
+        return JsonResponse({'items': list(items)})
 
 
 
@@ -70,7 +74,8 @@ class ProductView(DetailView):
         return context
 
     def get_object(self):
-        return Product.objects.filter(name=self.kwargs['name'])
+
+        return get_object_or_404(Product, name=self.kwargs.get('name'))
 
 
 class AjaxComment(View):
@@ -103,7 +108,7 @@ class AjaxComment(View):
         return HttpResponse()
 
     @staticmethod
-    def delete(request):
+    def delete(request, **kwargs):
 
         data = QueryDict(request.body)
         index = data['index']

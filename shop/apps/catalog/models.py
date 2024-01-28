@@ -33,20 +33,21 @@ class Product(models.Model):
 
     name = models.CharField(verbose_name='Name', max_length=40, db_index=True, unique=True)
     description = models.CharField(verbose_name='Describe your toys', max_length=2000)
-    created = models.DateField(verbose_name='Created', blank=True, default=timezone.now())
+    created = models.DateField(verbose_name='Created', blank=True, default=timezone.now)
     material = models.ManyToManyField('Material', verbose_name='Materials')
     poster = models.ImageField(verbose_name='Poster', default=f'media/catalog/Unknown.png', upload_to=get_poster_path)
     brand = models.ForeignKey(
         'Brand', verbose_name='Brand', related_name='brands',
-        on_delete=models.CASCADE, default=[0]
+        on_delete=models.CASCADE
     )
     age = models.IntegerField(verbose_name='Age', default=0)
     quantity = models.IntegerField(verbose_name='Quantity', default=0)
     price = models.FloatField(verbose_name='Price', default=0)
-    category = models.ManyToManyField('Category', verbose_name='Category', default=[0], related_name='categories')
+    category = models.ManyToManyField('Category', verbose_name='Category', related_name='categories')
+    objects = models.Manager()
 
     def get_id(self):
-        return str(self.id)
+        return str(self.pk)
 
     def get_absolute_url(self):
         """Отримуємо точний шлях """

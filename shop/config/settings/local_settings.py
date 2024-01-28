@@ -1,3 +1,5 @@
+import os
+
 from config.settings.development import *
 
 from dotenv import load_dotenv
@@ -6,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-SECRET_KEY = 'django-insecure-m4k50--bf&cz$r(e6n%zr2z#*e5iw)7@qc^^wk=%o%j%kdx=zq'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 CACHES = {
     'default': {
