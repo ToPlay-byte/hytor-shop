@@ -33,6 +33,9 @@
                             {% endif %}
                         <label for="{{form.captcha.id_for_label}}">{{form.captcha.label}}:</label>
                         {{form.captcha}}
+                        {% if form.captcha.errors %}
+                            {{form.captcha.errors}}
+                        {% endif %}
                         <button type="submit" class="submit">Enter</button>
                     </form>
                     <a href="{% url 'social:begin' 'google-oauth2' %}" class="google">Sign in with google</a>
