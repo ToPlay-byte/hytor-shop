@@ -3,7 +3,6 @@ import os.path
 from pathlib import Path
 
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
@@ -75,7 +74,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 
 SOCIAL_AUTH_PIPELINE = (

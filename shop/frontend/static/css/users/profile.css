@@ -112,10 +112,17 @@ li {
     border-radius: 4px;
     cursor: pointer;
     color: #ed0722;
-    width: 70px;
+    width: 100%;
+    padding: 15px;
     font-family: 'Open Sans', sans-serif;
     font-size: 13px;
-    font-weight: 400px;
+    font-weight: 400;
+    transition: all .2s
+}
+
+.submit:hover {
+    background-color: #ed0722;
+    color: #fff
 }
 
 
