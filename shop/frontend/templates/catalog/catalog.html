@@ -60,6 +60,8 @@
                     <h1 class="category__title">Categories</h1>
                     {% for category in categories %}
                         <a href="{% url 'catalog:category' category.category %}" class="categories__link">{{category.category}}</a>
+                    {% empty %}
+                        <div class="categories__empty">Sorry! We have not added categories yet</div>
                     {% endfor %}
                 </div>
                 <div class="catalog__list">

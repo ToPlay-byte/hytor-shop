@@ -105,6 +105,10 @@ li {
     margin-top: 10px;
 }
 
+.categories__empty {
+    margin-top: 15px;
+}
+
 .product {
     padding: 20px;
     border: 1px solid #000;
